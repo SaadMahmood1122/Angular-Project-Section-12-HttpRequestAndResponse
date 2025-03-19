@@ -20,10 +20,14 @@ export class AvailablePlacesComponent implements OnInit {
   // Sending http get request
   ngOnInit(): void {
     const subscription = this.httpClient
-      .get<{ places: Place[] }>('http://localhost:3000/places')
+      .get<{ places: Place[] }>('http://localhost:3000/places', {
+        observe: 'response',
+      })
       .subscribe({
-        next: (respData) => {
-          console.log('response Data :: ', respData.places);
+        next: (response) => {
+          // console.log('response Data :: ', respData.places);
+          console.log(response);
+          console.log(response.body?.places);
         },
       });
     // not necessory but good practice when component not using
