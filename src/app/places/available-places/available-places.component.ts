@@ -16,10 +16,11 @@ import { map } from 'rxjs';
 export class AvailablePlacesComponent implements OnInit {
   places = signal<Place[] | undefined>(undefined);
   private destroyRef = inject(DestroyRef);
-
+  isLoadingData = signal<boolean>(false);
   private httpClient = inject(HttpClient);
   // Sending http get request
   ngOnInit(): void {
+    this.isLoadingData.set(true);
     const subscription = this.httpClient
       .get<{ places: Place[] }>('http://localhost:3000/places')
       .pipe(map((respData) => respData.places))
@@ -28,7 +29,11 @@ export class AvailablePlacesComponent implements OnInit {
           console.log(places);
           this.places.set(places);
         },
+        complete: () => {
+          this.isLoadingData.set(false);
+        },
       });
+
     // not necessory but good practice when component not using
     this.destroyRef.onDestroy(() => {
       subscription.unsubscribe();
