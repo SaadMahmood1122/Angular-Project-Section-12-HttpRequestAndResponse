@@ -1,4 +1,11 @@
-import { Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  Input,
+  OnInit,
+  inject,
+  signal,
+} from '@angular/core';
 
 import { Place } from '../place.model';
 import { PlacesComponent } from '../places.component';
@@ -15,8 +22,9 @@ import { map } from 'rxjs';
 })
 export class AvailablePlacesComponent implements OnInit {
   places = signal<Place[] | undefined>(undefined);
-  private destroyRef = inject(DestroyRef);
   isLoadingData = signal<boolean>(false);
+  error = signal('');
+  private destroyRef = inject(DestroyRef);
   private httpClient = inject(HttpClient);
   // Sending http get request
   ngOnInit(): void {
@@ -29,6 +37,13 @@ export class AvailablePlacesComponent implements OnInit {
           console.log(places);
           this.places.set(places);
         },
+        // error: this will execute when any error occure
+        error: (error) => {
+          //this.error.set(error.message);
+          this.error.set('Some thing wents wrong while fetching data....');
+        },
+        //complete: This callback gets triggered when the HTTP request has finished,
+        // regardless of whether it was successful or failed. It marks the completion of the observable stream.
         complete: () => {
           this.isLoadingData.set(false);
         },

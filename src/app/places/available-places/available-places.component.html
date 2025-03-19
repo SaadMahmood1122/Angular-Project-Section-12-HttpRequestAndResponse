@@ -1,6 +1,8 @@
 <app-places-container title="Available Places">
-  @if (isLoadingData()) {
+  @if (isLoadingData() && !error()) {
   <p class="fallback-text">Loading Data from Backend....</p>
+  } @if (error()) {
+  <p class="fallback-text">{{ error() }}</p>
   } @if (places()) {
   <app-places [places]="places()!" />
   } @else if (places()?.length === 0) {
