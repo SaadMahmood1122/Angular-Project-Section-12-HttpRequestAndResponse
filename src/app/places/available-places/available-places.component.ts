@@ -26,6 +26,7 @@ export class AvailablePlacesComponent implements OnInit {
       .subscribe({
         next: (places) => {
           console.log(places);
+          this.places.set(places);
         },
       });
     // not necessory but good practice when component not using
