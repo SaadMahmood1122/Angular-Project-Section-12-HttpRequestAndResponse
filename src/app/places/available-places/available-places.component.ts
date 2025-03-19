@@ -4,6 +4,7 @@ import { Place } from '../place.model';
 import { PlacesComponent } from '../places.component';
 import { PlacesContainerComponent } from '../places-container/places-container.component';
 import { HttpClient } from '@angular/common/http';
+import { map } from 'rxjs';
 
 @Component({
   selector: 'app-available-places',
@@ -20,14 +21,11 @@ export class AvailablePlacesComponent implements OnInit {
   // Sending http get request
   ngOnInit(): void {
     const subscription = this.httpClient
-      .get<{ places: Place[] }>('http://localhost:3000/places', {
-        observe: 'response',
-      })
+      .get<{ places: Place[] }>('http://localhost:3000/places')
+      .pipe(map((respData) => respData.places))
       .subscribe({
-        next: (response) => {
-          // console.log('response Data :: ', respData.places);
-          console.log(response);
-          console.log(response.body?.places);
+        next: (places) => {
+          console.log(places);
         },
       });
     // not necessory but good practice when component not using
