@@ -10,8 +10,7 @@ import {
 import { Place } from '../place.model';
 import { PlacesComponent } from '../places.component';
 import { PlacesContainerComponent } from '../places-container/places-container.component';
-import { HttpClient } from '@angular/common/http';
-import { map } from 'rxjs';
+import { PlacesService } from '../places.service';
 
 @Component({
   selector: 'app-available-places',
@@ -25,31 +24,24 @@ export class AvailablePlacesComponent implements OnInit {
   isLoadingData = signal<boolean>(false);
   error = signal('');
   private destroyRef = inject(DestroyRef);
-  private httpClient = inject(HttpClient);
-  // Sending http get request
+  private placesService = inject(PlacesService);
   ngOnInit(): void {
     this.isLoadingData.set(true);
-    const subscription = this.httpClient
-      .get<{ places: Place[] }>('http://localhost:3000/places')
+    const subscription = this.placesService
+      .loadAvailablePlaces()
       .pipe(map((respData) => respData.places))
       .subscribe({
         next: (places) => {
           console.log(places);
           this.places.set(places);
         },
-        // error: this will execute when any error occure
         error: (error) => {
-          //this.error.set(error.message);
           this.error.set('Some thing wents wrong while fetching data....');
         },
-        //complete: This callback gets triggered when the HTTP request has finished,
-        // regardless of whether it was successful or failed. It marks the completion of the observable stream.
         complete: () => {
           this.isLoadingData.set(false);
         },
       });
-
-    // not necessory but good practice when component not using
     this.destroyRef.onDestroy(() => {
       subscription.unsubscribe();
     });
@@ -57,8 +49,8 @@ export class AvailablePlacesComponent implements OnInit {
 
   onSelectedPlace(place: Place) {
     console.log('----sending request----');
-    const subscription = this.httpClient
-      .put('http://localhost:3000/user-places', { placeId: place.id })
+    const subscription = this.placesService
+      .addPlaceToUserPlaces(place.id)
       .subscribe({
         next: (response) => {
           console.log('----Response----');

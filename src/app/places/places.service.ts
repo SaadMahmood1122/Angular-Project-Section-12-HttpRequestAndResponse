@@ -1,6 +1,7 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable, inject, signal } from '@angular/core';
 
 import { Place } from './place.model';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root',
@@ -10,11 +11,25 @@ export class PlacesService {
 
   loadedUserPlaces = this.userPlaces.asReadonly();
 
-  loadAvailablePlaces() {}
+  private httpClient = inject(HttpClient);
 
-  loadUserPlaces() {}
+  loadAvailablePlaces() {
+    return this.httpClient.get<{ places: Place[] }>(
+      'http://localhost:3000/places'
+    );
+  }
 
-  addPlaceToUserPlaces(place: Place) {}
+  loadUserPlaces() {
+    return this.httpClient.get<{ places: Place[] }>(
+      'http://localhost:3000/user-places'
+    );
+  }
+
+  addPlaceToUserPlaces(placeId: string) {
+    return this.httpClient.put('http://localhost:3000/user-places', {
+      placeId: placeId,
+    });
+  }
 
   removeUserPlace(place: Place) {}
 }
