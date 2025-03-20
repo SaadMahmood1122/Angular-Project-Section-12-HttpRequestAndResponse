@@ -5,6 +5,7 @@ import { PlacesComponent } from '../places.component';
 import { Place } from '../place.model';
 import { map } from 'rxjs';
 import { PlacesService } from '../places.service';
+import { ErrorService } from '../../shared/error.service';
 
 @Component({
   selector: 'app-user-places',
@@ -19,6 +20,7 @@ export class UserPlacesComponent implements OnInit {
   error = signal('');
   private destroyRef = inject(DestroyRef);
   private placeService = inject(PlacesService);
+  private errorService = inject(ErrorService);
   ngOnInit(): void {
     this.isLoadingData.set(true);
     const subscription = this.placeService
@@ -30,7 +32,10 @@ export class UserPlacesComponent implements OnInit {
           this.places.set(places);
         },
         error: (error) => {
-          this.error.set('Some thing wents wrong while fetching data....');
+          this.error.set('Ops some thing went wrong');
+          this.errorService.showError(
+            'Some thing went Wrong while fetching user favrite places'
+          );
         },
         complete: () => {
           this.isLoadingData.set(false);

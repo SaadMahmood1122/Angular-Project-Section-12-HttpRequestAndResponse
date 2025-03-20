@@ -11,6 +11,8 @@ import { Place } from '../place.model';
 import { PlacesComponent } from '../places.component';
 import { PlacesContainerComponent } from '../places-container/places-container.component';
 import { PlacesService } from '../places.service';
+import { map } from 'rxjs';
+import { ErrorService } from '../../shared/error.service';
 
 @Component({
   selector: 'app-available-places',
@@ -25,6 +27,7 @@ export class AvailablePlacesComponent implements OnInit {
   error = signal('');
   private destroyRef = inject(DestroyRef);
   private placesService = inject(PlacesService);
+  private errorService = inject(ErrorService);
   ngOnInit(): void {
     this.isLoadingData.set(true);
     const subscription = this.placesService
@@ -36,7 +39,10 @@ export class AvailablePlacesComponent implements OnInit {
           this.places.set(places);
         },
         error: (error) => {
-          this.error.set('Some thing wents wrong while fetching data....');
+          // this.error.set('Some thing wents wrong while fetching data....');
+          this.errorService.showError(
+            'Some thing wents wrong while fetching data....'
+          );
         },
         complete: () => {
           this.isLoadingData.set(false);
