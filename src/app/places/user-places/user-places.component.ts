@@ -18,31 +18,12 @@ export class UserPlacesComponent implements OnInit {
   places = signal<Place[] | undefined>(undefined);
   isLoadingData = signal<boolean>(false);
   error = signal('');
-  private destroyRef = inject(DestroyRef);
+
   private placeService = inject(PlacesService);
-  private errorService = inject(ErrorService);
   ngOnInit(): void {
-    this.isLoadingData.set(true);
-    const subscription = this.placeService
-      .loadUserPlaces()
-      .pipe(map((respData) => respData.places))
-      .subscribe({
-        next: (places) => {
-          console.log(places);
-          this.places.set(places);
-        },
-        error: (error) => {
-          this.error.set('Ops some thing went wrong');
-          this.errorService.showError(
-            'Some thing went Wrong while fetching user favrite places'
-          );
-        },
-        complete: () => {
-          this.isLoadingData.set(false);
-        },
-      });
-    this.destroyRef.onDestroy(() => {
-      subscription.unsubscribe();
-    });
+    this.places = this.placeService.loadUserSelectedPlaces();
+  }
+  selectPlace(place: Place) {
+    this.placeService.addPlaceToUserPlaces(place);
   }
 }
