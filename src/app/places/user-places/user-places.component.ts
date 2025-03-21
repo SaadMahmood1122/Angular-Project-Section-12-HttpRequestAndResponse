@@ -23,7 +23,7 @@ export class UserPlacesComponent implements OnInit {
   ngOnInit(): void {
     this.places = this.placeService.loadUserSelectedPlaces();
   }
-  selectPlace(place: Place) {
-    this.placeService.addPlaceToUserPlaces(place);
+  onRemovePlace(place: Place) {
+    this.placeService.removeUserPlace(place);
   }
 }

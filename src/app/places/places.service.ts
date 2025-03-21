@@ -102,8 +102,26 @@ export class PlacesService {
       });
   }
 
-  // removeUserPlace(place: Place) {
-  //   return this.httpClient.delete(
-  //     `http://localhost:3000/user-places/${place.id}`
-  //   );
+  removeUserPlace(place: Place) {
+    const filteredPlase = this.userPlaces().filter(
+      (uPlace) => uPlace.id !== place.id
+    );
+    this.userPlaces.set(filteredPlase);
+    const subscribtion = this.httpClient
+      .delete(`http://localhost:3000/user-places/${place.id}`)
+      .subscribe({
+        next: () => {},
+        error: (error) => {
+          console.log('----Error occured----');
+          console.log(error);
+          this.errorService.showError(
+            'Some thing wents wrong while fetching User Selected places'
+          );
+        },
+        complete: () => {
+          console.log('----Request completed----');
+          subscribtion.unsubscribe();
+        },
+      });
+  }
 }

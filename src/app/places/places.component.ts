@@ -26,21 +26,4 @@ export class PlacesComponent {
   onSelectPlace(place: Place) {
     this.selectPlace.emit(place);
   }
-
-  // onRemovePlace(place: Place) {
-  //   const subscribtion = this.placeService.removeUserPlace(place).subscribe({
-  //     next: (response) => {
-  //       console.log(response);
-  //     },
-  //     error: (error) => {
-  //       console.log('Some thing went wrong while deleting place');
-  //     },
-  //     complete: () => {
-  //       console.log('Service Deletion complete...');
-  //     },
-  //   });
-  //   this.destoryRef.onDestroy(() => {
-  //     subscribtion.unsubscribe();
-  //   });
-  // }
 }
